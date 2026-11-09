@@ -9,6 +9,7 @@ import pymysql
 
 from database import get_database_connection, print_mysql_startup_warning
 from vision import (
+    hitung_persentase_cokelat,
     make_transparent_leaf_preview,
     prepare_leaf_sample,
 )
@@ -140,6 +141,9 @@ def predict():
         citra_segmentasi, mask_daun, persentase_cacat, citra_rgb = (
             prepare_leaf_sample(citra_bgr)
         )
+        persentase_cokelat = hitung_persentase_cokelat(
+            citra_segmentasi, mask_daun
+        )
 
         nama_seg = f"seg_{os.path.splitext(nama_bersih)[0]}.png"
         path_simpan_seg = os.path.join(SEGMENTED_DIR, nama_seg)
@@ -167,31 +171,56 @@ def predict():
         }
 
         idx_tertinggi = int(np.argmax(prediksi_prob))
-        kelas_terpilih = CLASS_NAMES[idx_tertinggi]
-        confidence = round(float(prediksi_prob[idx_tertinggi]) * 100.0, 1)
+        kelas_model = CLASS_NAMES[idx_tertinggi]
+        kelas_terpilih = kelas_model
+        if kelas_model == "afkir_total" and persentase_cokelat <= 25.0:
+            kelas_terpilih = "sortir_parsial"
+        elif kelas_model == "siap_rajang" and persentase_cokelat >= 5.0:
+            kelas_terpilih = "sortir_parsial"
+        idx_keputusan = CLASS_NAMES.index(kelas_terpilih)
+        confidence = round(float(prediksi_prob[idx_keputusan]) * 100.0, 1)
+        dasar_keputusan = (
+            f"Model memilih afkir dan area cokelat {persentase_cokelat}% "
+            "melebihi batas 25%."
+            if kelas_model == "afkir_total" and kelas_terpilih == "afkir_total"
+            else (
+                f"Model memilih afkir, tetapi area cokelat hanya "
+                f"{persentase_cokelat}%; daun masuk Grade B."
+                if kelas_model == "afkir_total"
+                else f"Area cokelat daun {persentase_cokelat}%."
+            )
+        )
 
-        # Logika Keputusan Terpadu Sentra Desa Ambat
-        if kelas_terpilih == "afkir_total":
-            grade = "GRADE C"
-            huruf = "C"
-            judul = "Afkir Total (Ditolak Mesin)"
-            deskripsi = f"Model mengidentifikasi daun sebagai afkir total (cacat tersegmentasi: {persentase_cacat}%)."
-            tindakan = "Afkir total. Jangan masukkan ke corong mesin perajang agar tidak mencemari aroma bal rajangan."
-            penanganan = "Singkirkan daun rusak dari tumpukan pemeraman los gudang."
-        elif kelas_terpilih == "siap_rajang" and persentase_cacat < 12.0:
-            grade = "GRADE A"
-            huruf = "A"
-            judul = "Sangat Layak (Siap Rajang Penuh)"
-            deskripsi = f"Kuning keemasan semburat hijau peram prima, bergetah optimal (cacat: {persentase_cacat}%)."
-            tindakan = "Langsung digulung bersama tumpukan mutu utama lalu masukkan ke corong mesin perajang."
-            penanganan = "Jaga kelembapan getah daun tembakau sebelum perajangan sore hari."
-        else:
-            grade = "GRADE B"
-            huruf = "B"
-            judul = "Perlu Sortir Parsial (Rompes Ujung)"
-            deskripsi = f"Perlu sortir parsial; rasio cacat tersegmentasi {persentase_cacat}%."
-            tindakan = "Potong / rompes sekitar 10-25% ujung daun yang cacat sebelum digulung ke corong mesin."
-            penanganan = "Bagian helai yang bersih tetap dapat dirajang dengan mutu standar."
+        keputusan_kelas = {
+            "siap_rajang": (
+                "A",
+                "Sangat Layak (Siap Rajang Penuh)",
+                f"Daun memenuhi klasifikasi siap rajang. {dasar_keputusan} "
+                f"Cacat tersegmentasi: {persentase_cacat}%.",
+                "Langsung masukkan daun ke corong mesin perajang.",
+                "Jaga kelembapan daun sebelum perajangan.",
+            ),
+            "sortir_parsial": (
+                "B",
+                "Perlu Sortir Parsial (Rompes Ujung)",
+                f"Daun diklasifikasikan sebagai sortir parsial. {dasar_keputusan} "
+                f"Cacat tersegmentasi: {persentase_cacat}%.",
+                "Potong bagian ujung daun yang cacat sebelum dimasukkan ke corong mesin.",
+                "Bagian helai yang bersih tetap dapat dirajang.",
+            ),
+            "afkir_total": (
+                "C",
+                "Afkir Total (Ditolak Mesin)",
+                f"Daun diklasifikasikan sebagai afkir total. {dasar_keputusan} "
+                f"Cacat tersegmentasi: {persentase_cacat}%.",
+                "Jangan masukkan daun ke corong mesin perajang.",
+                "Singkirkan daun dari tumpukan pemeraman.",
+            ),
+        }
+        huruf, judul, deskripsi, tindakan, penanganan = keputusan_kelas[
+            kelas_terpilih
+        ]
+        grade = f"GRADE {huruf}"
 
         try:
             conn = get_database_connection()
@@ -220,6 +249,7 @@ def predict():
                 "deskripsi": deskripsi,
                 "confidence": confidence,
                 "persentase_cacat": persentase_cacat,
+                "persentase_cokelat": persentase_cokelat,
                 "probabilitas": {
                     "grade_a": round(prob_grade["A"], 1),
                     "grade_b": round(prob_grade["B"], 1),
@@ -234,6 +264,8 @@ def predict():
             }
         })
 
+    except ValueError as e_pred:
+        return jsonify({"status": "error", "message": str(e_pred)}), 400
     except Exception as e_pred:
         import traceback
         traceback.print_exc()

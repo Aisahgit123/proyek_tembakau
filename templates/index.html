@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TobaccoVision</title>
+    <title>TobaccoVision - Kendali Mutu Daun Tembakau Desa Ambat</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Plus Jakarta Sans & Space Grotesk -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,6 +28,11 @@
                             forest: '#1E3D34',
                             forestDark: '#142923',
                             forestLight: '#2C574A',
+                            tobaccoGold: '#D97706',
+                            tobaccoWarm: '#F59E0B',
+                            leafGreen: '#059669',
+                            leafSoft: '#ECFDF5',
+                            creamBg: '#F8F9FA'
                         }
                     }
                 }
@@ -39,30 +42,49 @@
     <style>
         html, body {
             min-height: 100%;
-            background-color: #F4F5F7;
+            background-color: #F4F6F4;
+            background-image: radial-gradient(#1E3D34 0.65px, transparent 0.65px), radial-gradient(#10B981 0.65px, #F4F6F4 0.65px);
+            background-size: 26px 26px;
+            background-position: 0 0, 13px 13px;
         }
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: #CBD5E1;
+            background-color: #A7F3D0;
             border-radius: 9999px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-            background: #F1F5F9;
+            background: #E2E8F0;
+        }
+        .leaf-card-a {
+            background: linear-gradient(135deg, rgba(236, 253, 245, 0.95) 0%, rgba(209, 250, 229, 0.7) 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.35);
+        }
+        .leaf-card-b {
+            background: linear-gradient(135deg, rgba(254, 252, 232, 0.95) 0%, rgba(254, 243, 199, 0.7) 100%);
+            border: 1.5px solid rgba(245, 158, 11, 0.35);
+        }
+        .leaf-card-c {
+            background: linear-gradient(135deg, rgba(255, 241, 242, 0.95) 0%, rgba(255, 228, 230, 0.7) 100%);
+            border: 1.5px solid rgba(244, 63, 94, 0.35);
+        }
+        .leaf-card-total {
+            background: linear-gradient(135deg, rgba(240, 253, 250, 0.95) 0%, rgba(204, 251, 241, 0.7) 100%);
+            border: 1.5px solid rgba(20, 184, 166, 0.35);
         }
     </style>
 </head>
-<body class="bg-[#F4F5F7] text-slate-800 font-sans min-h-screen flex flex-col selection:bg-theme-forest selection:text-white">
+<body class="text-slate-800 font-sans min-h-screen flex flex-col selection:bg-theme-forest selection:text-white">
 
     <!-- =============================================================== -->
-    <!-- 1. NAVBAR RESPONSIF PERSIS REFERENSI (LOGO: TOBACCOVISION)      -->
+    <!-- 1. NAVBAR RESPONSIF (TOBACCOVISION)                             -->
     <!-- =============================================================== -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <header class="bg-white/95 backdrop-blur-md border-b border-emerald-900/10 sticky top-0 z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-2">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-theme-forest flex items-center justify-center text-white text-lg shadow-sm">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-theme-forest to-emerald-600 flex items-center justify-center text-white text-lg shadow-md shadow-emerald-900/20">
                     <i class="fa-solid fa-leaf"></i>
                 </div>
                 <div>
@@ -70,17 +92,17 @@
                 </div>
             </div>
 
-            <!-- 3 Tombol Tab Navigasi -->
+            <!-- Tab Navigasi -->
             <nav class="flex items-center gap-1.5 sm:gap-2">
-                <button id="nav-dashboard" onclick="switchTab('dashboard')" class="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-theme-forest text-white shadow-xs">
+                <button id="nav-dashboard" onclick="switchTab('dashboard')" class="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition bg-theme-forest text-white shadow-sm">
                     <i class="fa-solid fa-chart-pie text-xs"></i>
                     <span>Dashboard</span>
                 </button>
-                <button id="nav-klasifikasi" onclick="switchTab('klasifikasi')" class="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-600 hover:bg-slate-100">
+                <button id="nav-klasifikasi" onclick="switchTab('klasifikasi')" class="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-700 hover:bg-emerald-50/80">
                     <i class="fa-solid fa-microchip text-xs"></i>
                     <span>Klasifikasi</span>
                 </button>
-                <button id="nav-history" onclick="switchTab('history')" class="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-600 hover:bg-slate-100">
+                <button id="nav-history" onclick="switchTab('history')" class="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition text-slate-700 hover:bg-emerald-50/80">
                     <i class="fa-solid fa-clock-rotate-left text-xs"></i>
                     <span>History</span>
                 </button>
@@ -89,18 +111,21 @@
     </header>
 
     <!-- =============================================================== -->
-    <!-- 2. WADAH UTAMA KONTEN (SEIMBANG & SELARAS MAX-W-7XL)             -->
+    <!-- 2. WADAH UTAMA KONTEN                                           -->
     <!-- =============================================================== -->
     <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex-1 w-full space-y-8">
 
         <!-- =========================================================== -->
-        <!-- TAB 1: DASHBOARD (STATISTIK & EDUKASI METODE)               -->
+        <!-- TAB 1: DASHBOARD (STATISTIK & EDUKASI)                      -->
         <!-- =========================================================== -->
         <section id="tab-dashboard" class="space-y-8 block">
-            <!-- Hero Banner Hijau Hutan Langsung Fokus & Bersih -->
-            <div class="bg-theme-forest rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-lg shadow-theme-forest/15">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-theme-forest via-[#163028] to-emerald-900 rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-xl shadow-theme-forest/20 border border-emerald-500/20">
                 <div class="absolute -right-6 -bottom-8 opacity-15 pointer-events-none">
                     <i class="fa-solid fa-leaf text-[260px] text-white"></i>
+                </div>
+                <div class="absolute right-1/4 -top-10 opacity-10 pointer-events-none">
+                    <i class="fa-solid fa-seedling text-[140px] text-emerald-300"></i>
                 </div>
 
                 <div class="max-w-2xl space-y-5 relative z-10">
@@ -114,92 +139,108 @@
                     </p>
 
                     <div class="flex flex-wrap items-center gap-3 pt-2">
-                        <button onclick="switchTab('klasifikasi')" class="px-5 py-2.5 rounded-xl bg-white text-theme-forest font-bold text-xs sm:text-sm hover:bg-slate-100 transition shadow-md flex items-center gap-2">
+                        <button onclick="switchTab('klasifikasi')" class="px-5 py-2.5 rounded-xl bg-white text-theme-forest font-bold text-xs sm:text-sm hover:bg-emerald-50 transition shadow-md flex items-center gap-2">
                             <span>Mulai Klasifikasi</span>
                             <span>→</span>
                         </button>
-                        <button onclick="switchTab('history')" class="px-5 py-2.5 rounded-xl bg-theme-forestLight/80 hover:bg-theme-forestLight text-white font-semibold text-xs sm:text-sm border border-white/20 transition">
+                        <button onclick="switchTab('history')" class="px-5 py-2.5 rounded-xl bg-emerald-800/80 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm border border-emerald-400/30 transition">
                             Lihat Riwayat
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Kartu 4 Metrik Statistik -->
+            <!-- Kartu 4 Metrik Statistik Berwarna Daun -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <!-- 1. Total Klasifikasi -->
+                <div class="leaf-card-total p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute -right-3 -bottom-3 opacity-15 text-emerald-800 text-5xl pointer-events-none">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-bold text-teal-800 uppercase tracking-wider">
                         <span>Total Klasifikasi</span>
-                        <span class="p-1.5 bg-slate-100 rounded text-slate-600"><i class="fa-solid fa-list-check"></i></span>
+                        <span class="w-7 h-7 rounded-lg bg-teal-100/90 text-teal-800 flex items-center justify-center text-xs"><i class="fa-solid fa-list-check"></i></span>
                     </div>
-                    <div class="mt-4">
-                        <p id="stat-total" class="text-3xl font-extrabold text-slate-900">0</p>
-                        <p class="text-[11px] text-slate-400 mt-1">Seluruh data tersimpan</p>
+                    <div class="mt-4 relative z-10">
+                        <p id="stat-total" class="text-3xl sm:text-4xl font-extrabold text-teal-950">0</p>
+                        <p class="text-[11px] text-teal-700 font-medium mt-1">Seluruh data tersimpan</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                <!-- 2. Siap Rajang (Grade A) -->
+                <div class="leaf-card-a p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute -right-3 -bottom-3 opacity-15 text-emerald-800 text-5xl pointer-events-none">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-bold text-emerald-800 uppercase tracking-wider">
                         <span>Siap Rajang</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="px-2 py-0.5 rounded-md bg-emerald-200/90 text-emerald-900 text-[10px] font-black">GRADE A</span>
                     </div>
-                    <div class="mt-4">
-                        <p id="stat-grade-a" class="text-3xl font-extrabold text-slate-900">0</p>
-                        <p id="stat-grade-a-pct" class="text-[11px] text-emerald-600 font-semibold mt-1">0% dari total</p>
+                    <div class="mt-4 relative z-10">
+                        <p id="stat-grade-a" class="text-3xl sm:text-4xl font-extrabold text-emerald-950">0</p>
+                        <p id="stat-grade-a-pct" class="text-[11px] text-emerald-700 font-bold mt-1">0% dari total</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-xs font-bold text-amber-700 uppercase tracking-wider">
+                <!-- 3. Sortir Parsial (Grade B) -->
+                <div class="leaf-card-b p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute -right-3 -bottom-3 opacity-15 text-amber-800 text-5xl pointer-events-none">
+                        <i class="fa-solid fa-scissors"></i>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-bold text-amber-800 uppercase tracking-wider">
                         <span>Sortir Parsial</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        <span class="px-2 py-0.5 rounded-md bg-amber-200/90 text-amber-900 text-[10px] font-black">GRADE B</span>
                     </div>
-                    <div class="mt-4">
-                        <p id="stat-grade-b" class="text-3xl font-extrabold text-slate-900">0</p>
-                        <p id="stat-grade-b-pct" class="text-[11px] text-amber-600 font-semibold mt-1">0% dari total</p>
+                    <div class="mt-4 relative z-10">
+                        <p id="stat-grade-b" class="text-3xl sm:text-4xl font-extrabold text-amber-950">0</p>
+                        <p id="stat-grade-b-pct" class="text-[11px] text-amber-700 font-bold mt-1">0% dari total</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col justify-between">
-                    <div class="flex items-center justify-between text-xs font-bold text-rose-700 uppercase tracking-wider">
-                        <span>Afkir Total</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <!-- 4. Afkir Total (Grade C) -->
+                <div class="leaf-card-c p-6 rounded-3xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
+                    <div class="absolute -right-3 -bottom-3 opacity-15 text-rose-800 text-5xl pointer-events-none">
+                        <i class="fa-solid fa-ban"></i>
                     </div>
-                    <div class="mt-4">
-                        <p id="stat-grade-c" class="text-3xl font-extrabold text-slate-900">0</p>
-                        <p id="stat-grade-c-pct" class="text-[11px] text-rose-600 font-semibold mt-1">0% dari total</p>
+                    <div class="flex items-center justify-between text-xs font-bold text-rose-800 uppercase tracking-wider">
+                        <span>Afkir Total</span>
+                        <span class="px-2 py-0.5 rounded-md bg-rose-200/90 text-rose-900 text-[10px] font-black">GRADE C</span>
+                    </div>
+                    <div class="mt-4 relative z-10">
+                        <p id="stat-grade-c" class="text-3xl sm:text-4xl font-extrabold text-rose-950">0</p>
+                        <p id="stat-grade-c-pct" class="text-[11px] text-rose-700 font-bold mt-1">0% dari total</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 3 Kartu Edukasi Teoritis Bawah -->
+            <!-- 3 Kartu Edukasi Metode -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                <div class="bg-gradient-to-br from-[#F0FDF4] to-[#DCFCE7] p-6 rounded-3xl border border-emerald-300/80 shadow-xs space-y-2.5 relative overflow-hidden">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">
                         <i class="fa-solid fa-palette"></i>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-900">Apa itu Ruang Warna HSV?</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h4 class="text-sm font-extrabold text-emerald-950">Ruang Warna HSV</h4>
+                    <p class="text-xs text-emerald-900/80 leading-relaxed font-normal">
                         HSV (Hue, Saturation, Value) memisahkan corak warna dari pencahayaan. Metode ini efektif mengisolasi daun dari latar belakang serta mendeteksi persentase piksel bercak cacat secara objektif.
                     </p>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-sm font-bold">
+                <div class="bg-gradient-to-br from-[#EFF6FF] to-[#DBEAFE] p-6 rounded-3xl border border-blue-300/80 shadow-xs space-y-2.5 relative overflow-hidden">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">
                         <i class="fa-solid fa-brain"></i>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-900">Apa itu MobileNetV2?</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h4 class="text-sm font-extrabold text-blue-950">MobileNetV2</h4>
+                    <p class="text-xs text-blue-900/80 leading-relaxed font-normal">
                         MobileNetV2 adalah arsitektur deep learning Convolutional Neural Network (CNN) berbasis Inverted Residuals yang sangat cepat dan akurat dalam mengenali tekstur urat daun dan getah tembakau.
                     </p>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-sm font-bold">
+                <div class="bg-gradient-to-br from-[#FEFCE8] to-[#FEF08A] p-6 rounded-3xl border border-amber-300/80 shadow-xs space-y-2.5 relative overflow-hidden">
+                    <div class="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">
                         <i class="fa-solid fa-gears"></i>
                     </div>
-                    <h4 class="text-sm font-bold text-slate-900">Cara Sistem Bekerja</h4>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h4 class="text-sm font-extrabold text-amber-950">Sistem Bekerja</h4>
+                    <p class="text-xs text-amber-900/80 leading-relaxed font-normal">
                         Foto daun dihilangkan latar belakangnya menggunakan HSV dan dihitung rasio cacatnya &rarr; diekstraksi ciri uratnya oleh MobileNetV2 &rarr; menghasilkan vonis Grade A, B, atau C beserta rekomendasi perajangan.
                     </p>
                 </div>
@@ -210,7 +251,7 @@
         <!-- TAB 2: KLASIFIKASI (UPLOAD & KAMERA LANGSUNG)               -->
         <!-- =========================================================== -->
         <section id="tab-klasifikasi" class="space-y-6 hidden">
-            <!-- Banner Judul Klasifikasi dengan Gaya Hero Hijau Hutan Dashboard -->
+            <!-- Banner Judul -->
             <div class="bg-theme-forest rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-theme-forest/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="absolute -right-6 -bottom-8 opacity-10 pointer-events-none">
                     <i class="fa-solid fa-microchip text-[180px] text-white"></i>
@@ -232,16 +273,29 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                <div>
-                    <h3 class="text-sm font-bold text-slate-900">Upload / Ambil Foto Daun</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Pilih mode upload berkas atau ambil foto langsung dari webcam / kamera HP Anda.</p>
+            <!-- KOTAK FITUR UNGGAH FOTO & KAMERA -->
+            <div class="bg-gradient-to-br from-[#EEF5F1] via-[#F4F9F6] to-[#E9F3ED] p-6 sm:p-8 rounded-3xl border-2 border-emerald-600/20 shadow-md space-y-6 relative overflow-hidden">
+                <div class="absolute -right-8 -bottom-10 opacity-10 pointer-events-none text-emerald-900">
+                    <i class="fa-solid fa-leaf text-[220px]"></i>
+                </div>
+
+                <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-900/10 pb-4">
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                            Studio Input Spesimen Daun Tembakau
+                        </h3>
+                        <p class="text-xs text-slate-600 mt-0.5">Pilih mode upload file atau aktifkan kamera langsung laptop/HP Anda.</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 text-[11px] font-mono font-bold text-emerald-800 shadow-xs self-start sm:self-auto">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Studio Siap
+                    </span>
                 </div>
 
                 <!-- Pilihan Mode Upload vs Kamera -->
-                <div class="grid grid-cols-2 max-w-sm gap-2 p-1 bg-slate-100 rounded-2xl">
-                    <button id="btn-tab-upload" onclick="setMode('upload')" class="py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-white text-slate-900 shadow-xs">
-                        <i class="fa-solid fa-cloud-arrow-up text-theme-forest"></i>
+                <div class="grid grid-cols-2 max-w-sm gap-2 p-1 bg-white/70 backdrop-blur-sm rounded-2xl border border-emerald-200/60 shadow-xs relative z-10">
+                    <button id="btn-tab-upload" onclick="setMode('upload')" class="py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-theme-forest text-white shadow-xs">
+                        <i class="fa-solid fa-cloud-arrow-up text-emerald-300"></i>
                         <span>Upload File</span>
                     </button>
                     <button id="btn-tab-camera" onclick="setMode('camera')" class="py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
@@ -251,52 +305,52 @@
                 </div>
 
                 <!-- Box Upload File -->
-                <div id="box-upload" class="space-y-4">
-                    <div id="dropzone" onclick="document.getElementById('input-file-daun').click()" class="border-2 border-dashed border-slate-300 hover:border-theme-forest rounded-2xl p-8 transition bg-slate-50/60 hover:bg-emerald-50/20 text-center cursor-pointer relative min-h-[240px] flex flex-col items-center justify-center group">
+                <div id="box-upload" class="space-y-4 relative z-10">
+                    <div id="dropzone" onclick="document.getElementById('input-file-daun').click()" class="border-2 border-dashed border-emerald-500/40 hover:border-theme-forest rounded-2xl p-8 transition bg-white/80 hover:bg-emerald-50/50 text-center cursor-pointer relative min-h-[240px] flex flex-col items-center justify-center group shadow-xs">
                         <input type="file" id="input-file-daun" class="hidden" accept="image/*" onchange="bacaFotoDaun(event)">
                         
                         <div id="placeholder-upload" class="space-y-3">
-                            <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 text-theme-forest flex items-center justify-center mx-auto text-2xl shadow-xs group-hover:scale-105 transition">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-100 to-teal-50 border border-emerald-200 text-theme-forest flex items-center justify-center mx-auto text-2xl shadow-sm group-hover:scale-105 transition">
+                                <i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-slate-800">Tarik & Lepas Gambar</p>
-                                <p class="text-xs text-slate-400 mt-0.5">atau klik untuk memilih file dari komputer</p>
+                                <p class="text-sm font-extrabold text-slate-900">Unggah Gambar Daun ke Sini</p>
                             </div>
+                            <span class="inline-block px-3.5 py-1.5 rounded-xl bg-theme-forest text-white text-xs font-bold shadow-xs">Pilih Foto Daun</span>
                         </div>
 
                         <div id="preview-upload-wrapper" class="hidden w-full relative">
-                            <img id="view-sample-img" src="" alt="Pratinjau Daun" class="max-h-64 mx-auto rounded-xl object-contain border border-slate-200 shadow-md">
-                            <p id="view-filename" class="text-xs font-mono font-medium text-slate-600 mt-2">-</p>
-                            <p class="text-[11px] text-slate-400">Klik gambar untuk mengganti foto lain</p>
+                            <img id="view-sample-img" src="" alt="Pratinjau Daun" class="max-h-64 mx-auto rounded-xl object-contain border-2 border-emerald-600/40 shadow-lg bg-white p-1">
+                            <p id="view-filename" class="text-xs font-mono font-bold text-slate-800 mt-2.5 bg-white/80 px-3 py-1 rounded-full inline-block border border-slate-200 shadow-xs">-</p>
+                            <p class="text-[11px] text-emerald-700 font-semibold mt-1">Pastikan hanya satu daun terlihat dan masih ada ruang kosong di sekelilingnya.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Box Kamera Webcam -->
-                <div id="box-camera" class="hidden space-y-4">
-                    <div class="w-full bg-black rounded-2xl overflow-hidden aspect-video relative flex items-center justify-center border border-slate-800">
+                <div id="box-camera" class="hidden space-y-4 relative z-10">
+                    <div class="w-full bg-slate-950 rounded-2xl overflow-hidden aspect-video relative flex items-center justify-center border-2 border-emerald-600/40 shadow-inner">
                         <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
                         <canvas id="webcam-canvas" class="hidden"></canvas>
                         
-                        <div id="cam-info" class="text-center text-white/80 space-y-3 p-6 max-w-md">
+                        <div id="cam-info" class="text-center text-white/90 space-y-3 p-6 max-w-md">
                             <i id="cam-icon-status" class="fa-solid fa-video text-4xl mb-1 block text-emerald-400"></i>
                             <p id="cam-text-status" class="text-xs font-mono text-slate-300">Klik "Nyalakan Webcam Langsung" di bawah untuk mengaktifkan kamera laptop Anda.</p>
                         </div>
                     </div>
                     
                     <div class="flex flex-wrap items-center justify-center gap-3">
-                        <button type="button" id="btn-toggle-cam" onclick="toggleCamera()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition flex items-center gap-2 shadow-xs">
-                            <i class="fa-solid fa-video"></i>
+                        <button type="button" id="btn-toggle-cam" onclick="toggleCamera()" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-video text-emerald-400"></i>
                             <span id="btn-cam-label">Nyalakan Webcam Langsung</span>
                         </button>
                         
-                        <button id="btn-take-photo" type="button" onclick="snapCamera()" disabled class="px-5 py-2.5 rounded-xl bg-theme-forest text-white font-bold text-xs hover:bg-theme-forestDark disabled:opacity-40 transition flex items-center gap-2">
+                        <button id="btn-take-photo" type="button" onclick="snapCamera()" disabled class="px-5 py-2.5 rounded-xl bg-theme-forest text-white font-bold text-xs hover:bg-theme-forestDark disabled:opacity-40 transition flex items-center gap-2 shadow-sm">
                             <i class="fa-solid fa-camera"></i>
                             <span>Jepret dari Webcam</span>
                         </button>
 
-                        <button type="button" onclick="document.getElementById('input-capture-direct').click()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs transition flex items-center gap-2 border border-slate-300 shadow-xs">
+                        <button type="button" onclick="bukaKameraSistemDirect()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition flex items-center gap-2 border border-emerald-300 shadow-sm">
                             <i class="fa-solid fa-camera-retro text-theme-forest"></i>
                             <span>Buka Kamera Sistem / HP</span>
                         </button>
@@ -304,25 +358,26 @@
                     </div>
                 </div>
 
-                <!-- Tombol Eksekusi Analisis -->
-                <button type="button" id="btn-proses-klasifikasi" onclick="eksekusiAnalisis()" class="w-full py-4 rounded-2xl bg-theme-forest hover:bg-theme-forestDark text-white font-bold text-sm tracking-wide shadow-md transition flex items-center justify-center gap-2 active:scale-[0.99]">
-                    <i class="fa-solid fa-microchip text-emerald-300"></i>
-                    <span>Mulai Analisis HSV & MobileNetV2</span>
+                <!-- SATU TOMBOL EKSEKUSI UTAMA -->
+                <button type="button" id="btn-proses-klasifikasi" onclick="eksekusiAnalisis()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-theme-forest via-[#234A3E] to-theme-forest hover:opacity-95 text-white font-black text-sm tracking-wide shadow-lg shadow-theme-forest/25 transition flex items-center justify-center gap-2.5 active:scale-[0.99] relative z-10 border border-white/20">
+                    <i class="fa-solid fa-microchip text-emerald-300 text-base"></i>
+                    <span>Sigmentasi & Klasfikasi</span>
+                    <i class="fa-solid fa-arrow-right text-emerald-300 text-xs ml-1"></i>
                 </button>
             </div>
 
-            <!-- Kartu Hasil Lengkap (Muncul Setelah Diproses) -->
-            <div id="box-result" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
+            <!-- KARTU HASIL LENGKAP: KOMPARASI CITRA SEBELUM & SESUDAH SEGMENTASI -->
+            <div id="box-result" class="bg-gradient-to-br from-white via-slate-50 to-emerald-50/20 p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 hidden">
                 
-                <!-- HEADER AREA KOMPARASI CITRA (DIBUAT MENONJOL & BERKELAS) -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+                <!-- Header Komparasi Citra -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
                     <div class="flex items-center gap-2.5">
                         <span class="w-8 h-8 rounded-xl bg-theme-forest text-white flex items-center justify-center text-xs shadow-xs">
                             <i class="fa-solid fa-layer-group"></i>
                         </span>
                         <div>
                             <h3 class="text-sm font-extrabold text-slate-900 tracking-tight">Komparasi Hasil Segmentasi Ruang Warna HSV</h3>
-                            <p class="text-[11px] font-mono text-slate-400">Verifikasi isolasi helai daun & deteksi lesi cacat fisik secara visual</p>
+                            <p class="text-[11px] font-mono text-slate-500">Verifikasi isolasi helai daun & deteksi lesi cacat fisik secara visual</p>
                         </div>
                     </div>
                     <span id="badge-luas-cacat-top" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 text-white shadow-xs">
@@ -330,11 +385,11 @@
                     </span>
                 </div>
 
-                <!-- DUA CITRA BERJEJERAN SEIMBANG (SEBELUM & SESUDAH SEGMENTASI) -->
+                <!-- Dua Citra Berjejeran (Sebelum & Sesudah Segmentasi) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     
-                    <!-- KOTAK 1: SEBELUM SEGMENTASI (CITRA ASLI) -->
-                    <div class="rounded-2xl border border-slate-200 bg-slate-950 overflow-hidden shadow-xs flex flex-col group transition hover:border-slate-300">
+                    <!-- Kotak 1: Sebelum Segmentasi (Citra Asli) -->
+                    <div class="rounded-3xl border border-slate-200 bg-slate-950 overflow-hidden shadow-xs flex flex-col group transition hover:border-slate-300">
                         <div class="py-2.5 px-4 bg-slate-100 border-b border-slate-200 flex items-center justify-between">
                             <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
                                 <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
@@ -350,8 +405,8 @@
                         </div>
                     </div>
 
-                    <!-- KOTAK 2: SESUDAH SEGMENTASI (LATAR BELAKANG HITAM PEKAT HSV) -->
-                    <div class="rounded-2xl border-2 border-emerald-600 bg-black overflow-hidden shadow-md shadow-emerald-600/10 flex flex-col group transition">
+                    <!-- Kotak 2: Sesudah Segmentasi (Latar Belakang Hitam Pekat HSV) -->
+                    <div class="rounded-3xl border-2 border-emerald-600 bg-black overflow-hidden shadow-md shadow-emerald-600/10 flex flex-col group transition">
                         <div class="py-2.5 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
                             <div class="flex items-center gap-2 text-xs font-extrabold text-emerald-400">
                                 <i class="fa-solid fa-circle-check text-emerald-400"></i>
@@ -362,18 +417,18 @@
                         <div class="w-full h-56 sm:h-64 bg-black flex items-center justify-center p-2 relative overflow-hidden">
                             <img id="res-img-seg" src="" alt="Masker HSV" class="max-w-full max-h-full w-auto h-auto object-contain transition duration-300 group-hover:scale-102">
                             <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/85 backdrop-blur text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30">
-                                Latar Hitam Pekat
+                                Area di luar mask transparan
                             </span>
                         </div>
                         <div class="py-2 px-3 text-[11px] text-center text-emerald-400 bg-slate-900 border-t border-slate-800 font-semibold">
-                            Latar belakang dieleminasi; hanya helai daun dan area cacat yang dianalisis
+                            Area di luar mask transparan; periksa tepi objek sebelum memakai hasil
                         </div>
                     </div>
 
                 </div>
 
-                <!-- KARTU VONIS HASIL KLASIFIKASI DI BAWAH CITRA (MENONJOL & TEGAS) -->
-                <div id="banner-diagnosa" class="rounded-2xl p-6 sm:p-7 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-emerald-800 to-emerald-700">
+                <!-- Kartu Vonis Hasil Klasifikasi di Bawah Citra -->
+                <div id="banner-diagnosa" class="rounded-3xl p-6 sm:p-7 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-emerald-800 to-emerald-700">
                     <div class="space-y-1.5 max-w-xl">
                         <div class="flex items-center gap-2">
                             <span id="res-badge" class="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-white/20 text-white backdrop-blur border border-white/25">
@@ -395,17 +450,17 @@
                     </div>
                 </div>
 
-                <!-- RINCIAN PARAMETER DAN REKOMENDASI MESIN (SEJAJAR DUA KOLOM) -->
+                <!-- Rincian Parameter dan Rekomendasi Mesin -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
                     
-                    <!-- TABEL PARAMETER FISIK KUANTITATIF (5 KOLOM) -->
-                    <div class="lg:col-span-5 bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                    <!-- Tabel Parameter Kuantitatif -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-50 to-emerald-50/50 border border-slate-200 rounded-3xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                             <i class="fa-solid fa-chart-simple text-theme-forest"></i>
                             <span>Parameter Kuantitatif Segmentasi:</span>
                         </h4>
                         
-                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+                        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
                             <table class="w-full text-xs font-mono">
                                 <tbody class="divide-y divide-slate-100">
                                     <tr>
@@ -428,11 +483,11 @@
                             </table>
                         </div>
 
-                        <p class="text-[11px] text-slate-400 font-mono">Data parameter tersinkron otomatis ke MySQL XAMPP.</p>
+                        <p class="text-[11px] text-slate-500 font-mono">Data parameter tersinkron otomatis ke MySQL XAMPP.</p>
                     </div>
 
-                    <!-- KOTAK REKOMENDASI MESIN PERAJANG (7 KOLOM) -->
-                    <div id="res-rec-box" class="lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex flex-col justify-between space-y-3">
+                    <!-- Kotak Rekomendasi Mesin Perajang -->
+                    <div id="res-rec-box" class="lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-emerald-50/90 border border-emerald-200 flex flex-col justify-between space-y-3 shadow-xs">
                         <div class="space-y-2">
                             <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 pb-2 border-b border-emerald-200/80">
                                 <i class="fa-solid fa-gears text-emerald-700 text-sm"></i>
@@ -455,10 +510,10 @@
         </section>
 
         <!-- =========================================================== -->
-        <!-- TAB 3: HISTORY (TERPADU PENUH & HAPUS PER SATU BARIS)       -->
+        <!-- TAB 3: HISTORY (BEBAS ANGKA 5 STATIS)                       -->
         <!-- =========================================================== -->
         <section id="tab-history" class="space-y-6 hidden">
-            <!-- Banner Judul History dengan Gaya Hero Hijau Hutan Dashboard -->
+            <!-- Banner Judul History -->
             <div class="bg-theme-forest rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-theme-forest/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="absolute -right-6 -bottom-8 opacity-10 pointer-events-none">
                     <i class="fa-solid fa-database text-[180px] text-white"></i>
@@ -472,7 +527,7 @@
                         Riwayat Klasifikasi
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-200 font-normal max-w-2xl leading-relaxed">
-                        Daftar riwayat audit mutu tersinkronisasi langsung dengan MySQL XAMPP (phpMyAdmin)
+                        Daftar riwayat audit mutu tersinkronisasi langsung dengan MySQL XAMPP (phpMyAdmin: db_tembakau_ambat).
                     </p>
                 </div>
                 <div class="hidden md:flex w-14 h-14 rounded-2xl bg-white/10 border border-white/20 items-center justify-center text-emerald-300 text-2xl shrink-0 relative z-10 shadow-inner">
@@ -480,18 +535,25 @@
                 </div>
             </div>
 
-            <!-- Wadah Kartu Putih Riwayat: Lebar dan Gaya Identik dengan Dashboard -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-xs space-y-6">
+            <!-- Wadah Kotak Tabel Riwayat (Angka 5 telah dibersihkan total) -->
+            <div class="bg-gradient-to-br from-[#F2F7F4] via-[#F8FAF9] to-[#ECF4EF] p-6 sm:p-8 rounded-3xl border-2 border-emerald-600/20 shadow-md space-y-6 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-12 opacity-10 pointer-events-none text-emerald-900">
+                    <i class="fa-solid fa-leaf text-[240px]"></i>
+                </div>
+
                 <!-- Toolbar: Search Bar, Filter & Tombol Hapus Semua -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-2 border-b border-slate-100">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-4 border-b border-emerald-900/10 relative z-10">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900">Semua Hasil Klasifikasi</h3>
-                        <p id="hist-total-badge" class="text-xs font-mono text-slate-500 mt-0.5">0 data tersimpan</p>
+                        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                            Tabel Log Audit Mutu Tembakau
+                        </h3>
+                        <p id="hist-total-badge" class="text-xs font-mono font-bold text-emerald-800 mt-0.5">Semua Hasil Klasifikasi</p>
                     </div>
 
                     <div class="flex items-center gap-3">
                         <div class="relative flex-1 sm:w-64">
-                            <input type="text" id="hist-search" onkeyup="filterHistorySearch()" placeholder="Cari hasil..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-theme-forest font-medium">
+                            <input type="text" id="hist-search" onkeyup="filterHistorySearch()" placeholder="Cari riwayat..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-emerald-200 bg-white/90 text-xs focus:outline-none focus:border-theme-forest font-medium shadow-xs">
                             <i class="fa-solid fa-magnifying-glass text-slate-400 absolute left-3 top-2.5 text-xs"></i>
                         </div>
 
@@ -503,17 +565,17 @@
                 </div>
 
                 <!-- Filter Kategori Kancing -->
-                <div class="flex gap-2 text-xs font-mono">
+                <div class="flex gap-2 text-xs font-mono relative z-10">
                     <button onclick="setFilterGrade('all')" id="filter-all" class="px-3.5 py-1.5 rounded-xl font-bold bg-theme-forest text-white shadow-xs">Semua</button>
-                    <button onclick="setFilterGrade('A')" id="filter-a" class="px-3.5 py-1.5 rounded-xl font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Grade A</button>
-                    <button onclick="setFilterGrade('B')" id="filter-b" class="px-3.5 py-1.5 rounded-xl font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Grade B</button>
-                    <button onclick="setFilterGrade('C')" id="filter-c" class="px-3.5 py-1.5 rounded-xl font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Grade C</button>
+                    <button onclick="setFilterGrade('A')" id="filter-a" class="px-3.5 py-1.5 rounded-xl font-semibold bg-white/90 text-slate-700 border border-emerald-200/60 hover:bg-emerald-50">Grade A</button>
+                    <button onclick="setFilterGrade('B')" id="filter-b" class="px-3.5 py-1.5 rounded-xl font-semibold bg-white/90 text-slate-700 border border-emerald-200/60 hover:bg-amber-50">Grade B</button>
+                    <button onclick="setFilterGrade('C')" id="filter-c" class="px-3.5 py-1.5 rounded-xl font-semibold bg-white/90 text-slate-700 border border-emerald-200/60 hover:bg-rose-50">Grade C</button>
                 </div>
 
                 <!-- Tabel Riwayat -->
-                <div class="overflow-x-auto rounded-2xl border border-slate-200 custom-scroll">
+                <div class="overflow-x-auto rounded-2xl border border-emerald-900/15 custom-scroll bg-white shadow-sm relative z-10">
                     <table class="w-full text-left text-xs font-mono min-w-[750px]">
-                        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <thead class="bg-[#1E3D34] text-[11px] uppercase tracking-wider text-emerald-100 border-b border-emerald-900">
                             <tr>
                                 <th class="py-3.5 px-5 font-bold">Waktu Lengkap Inspeksi</th>
                                 <th class="py-3.5 px-4 font-bold">Gambar</th>
@@ -610,16 +672,17 @@
         <span id="notif-text">Berhasil</span>
     </div>
 
-    <!-- FOOTER RESMI -->
+    <!-- Footer Resmi -->
     <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs font-mono text-slate-500 w-full mt-auto">
         TobaccoVision &copy; 2026 &bull; Segmentasi HSV × MobileNetV2 Deep Learning &bull; MySQL Database
     </footer>
 
     <!-- =============================================================== -->
-    <!-- 4. LOGIKA INTEGRASI JAVASCRIPT & FLASK BACKEND                  -->
+    <!-- 4. LOGIKA JAVASCRIPT & FLASK BACKEND INTEGRATION                -->
     <!-- =============================================================== -->
     <script>
         let berkasDaun = null;
+        let lokalPreviewDataUrl = null;
         let camStream = null;
         let rawHistoryData = [];
         let currentFilterGrade = 'all';
@@ -647,8 +710,11 @@
                         }
                     }
                 });
+                
+                // Matikan kamera jika keluar dari tab klasifikasi
                 if (tabId !== 'klasifikasi') stopCameraStream();
 
+                // Hapus foto & reset kotak input otomatis jika berpindah ke tab History atau Dashboard
                 if (tabId === 'history' || tabId === 'dashboard') {
                     resetHalamanKlasifikasiTotal();
                 }
@@ -666,10 +732,10 @@
             if (boxResult) {
                 boxResult.classList.add('hidden');
             }
-            const imgOrig = document.getElementById('res-img-orig');
-            const imgSeg = document.getElementById('res-img-seg');
-            if (imgOrig) imgOrig.src = '';
-            if (imgSeg) imgSeg.src = '';
+            const origEl = document.getElementById('res-img-orig');
+            const segEl = document.getElementById('res-img-seg');
+            if (origEl) origEl.src = '';
+            if (segEl) segEl.src = '';
         }
 
         // 2. Mode Input (Upload vs Kamera)
@@ -680,17 +746,16 @@
             const boxCam = document.getElementById('box-camera');
 
             if (mode === 'upload') {
-                if (btnUp) btnUp.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-white text-slate-900 shadow-xs";
+                if (btnUp) btnUp.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-theme-forest text-white shadow-xs";
                 if (btnCam) btnCam.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900";
                 if (boxUp) boxUp.classList.remove('hidden');
                 if (boxCam) boxCam.classList.add('hidden');
                 stopCameraStream();
             } else {
-                if (btnCam) btnCam.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-white text-slate-900 shadow-xs";
+                if (btnCam) btnCam.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-theme-forest text-white shadow-xs";
                 if (btnUp) btnUp.className = "py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900";
                 if (boxCam) boxCam.classList.remove('hidden');
                 if (boxUp) boxUp.classList.add('hidden');
-                if (!camStream) toggleCamera();
             }
         }
 
@@ -702,12 +767,13 @@
             berkasDaun = file;
             const reader = new FileReader();
             reader.onload = function(evt) {
+                lokalPreviewDataUrl = evt.target.result;
                 const viewImg = document.getElementById('view-sample-img');
                 const viewName = document.getElementById('view-filename');
                 const ph = document.getElementById('placeholder-upload');
                 const pw = document.getElementById('preview-upload-wrapper');
 
-                if (viewImg) viewImg.src = evt.target.result;
+                if (viewImg) viewImg.src = lokalPreviewDataUrl;
                 if (viewName) viewName.textContent = file.name;
                 if (ph) ph.classList.add('hidden');
                 if (pw) pw.classList.remove('hidden');
@@ -716,9 +782,9 @@
             reader.readAsDataURL(file);
         }
 
-        // Fungsi Reset Pembersih Kotak Unggah Otomatis
         function resetUploadArea() {
             berkasDaun = null;
+            lokalPreviewDataUrl = null;
             const inputFile = document.getElementById('input-file-daun');
             if (inputFile) inputFile.value = '';
 
@@ -735,7 +801,7 @@
             if (previewWrapper) previewWrapper.classList.add('hidden');
         }
 
-        // 4. Pengendali Kamera Fleksibel & Adaptif Laptop/HP (Telah Diperbaiki dari Duplikasi Sintaks)
+        // 4. Pengendali Kamera Bebas Macet (Auto-Release Track & Universal Fallback)
         async function toggleCamera() {
             const video = document.getElementById('webcam');
             const info = document.getElementById('cam-info');
@@ -744,64 +810,89 @@
             const camText = document.getElementById('cam-text-status');
             const camIcon = document.getElementById('cam-icon-status');
 
-            // Jika kamera sedang menyala, matikan
             if (camStream) {
                 stopCameraStream();
+                showToast('Kamera dinonaktifkan');
                 return;
             }
 
-            if (camText) camText.textContent = "Menghubungkan ke kamera laptop...";
+            stopCameraStream();
+
+            if (camText) camText.textContent = "Menghubungkan ke webcam laptop...";
             if (camIcon) camIcon.className = "fa-solid fa-spinner animate-spin text-4xl mb-1 block text-emerald-400";
 
             try {
-                // Kompatibilitas luas browser modern maupun lawas
-                let getMedia = null;
-                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    getMedia = (constraints) => navigator.mediaDevices.getUserMedia(constraints);
-                } else {
-                    const legacy = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-                    if (legacy) {
-                        getMedia = (constraints) => new Promise((resolve, reject) => legacy.call(navigator, constraints, resolve, reject));
+                let stream = null;
+
+                if (navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: { ideal: "user" },
+                                width: { ideal: 1280 },
+                                height: { ideal: 720 }
+                            },
+                            audio: false
+                        });
+                    } catch (e1) {
+                        try {
+                            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                        } catch (e2) {}
                     }
                 }
 
-                if (!getMedia) {
-                    throw new Error("Browser membatasi akses webcam di lingkungan ini.");
+                if (!stream) {
+                    const legacyGetUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+                    if (legacyGetUserMedia) {
+                        stream = await new Promise((resolve, reject) => {
+                            legacyGetUserMedia.call(navigator, { video: true, audio: false }, resolve, reject);
+                        });
+                    }
                 }
 
-                // Coba resolusi ramah webcam ZenBook tanpa paksaan 'environment'
-                const stream = await getMedia({
-                    video: {
-                        width: { ideal: 1280, min: 640 },
-                        height: { ideal: 720, min: 480 }
-                    },
-                    audio: false
-                }).catch(async () => {
-                    // Fallback ke resolusi standar apapun yang tersedia
-                    return await getMedia({ video: true, audio: false });
-                });
+                if (!stream) {
+                    throw new Error("Stream kamera tidak dapat diinisialisasi oleh browser.");
+                }
 
                 camStream = stream;
+
                 if (video) {
                     video.srcObject = camStream;
                     video.classList.remove('hidden');
-                    await video.play();
+                    video.setAttribute('playsinline', 'true');
+                    video.muted = true;
+                    video.onloadedmetadata = async () => {
+                        try {
+                            await video.play();
+                        } catch (errPlay) {
+                            console.warn("Autoplay webcam tertunda:", errPlay);
+                        }
+                    };
                 }
+
                 if (info) info.classList.add('hidden');
                 if (btnSnap) btnSnap.disabled = false;
                 if (btnLabel) btnLabel.textContent = "Hentikan Webcam";
                 showToast('Webcam berhasil aktif!');
+
             } catch (err) {
-                console.warn('Gagal memuat webcam langsung:', err);
+                console.warn('Gagal membuka webcam langsung:', err);
                 stopCameraStream();
-                if (camIcon) camIcon.className = "fa-solid fa-triangle-exclamation text-4xl mb-1 block text-amber-400";
+
+                if (camIcon) camIcon.className = "fa-solid fa-camera text-4xl mb-1 block text-emerald-400";
                 if (camText) {
-                    const secureContextHint = !window.isSecureContext
-                        ? " Akses kamera browser memerlukan HTTPS atau localhost."
-                        : "";
-                    camText.textContent = `Webcam tidak dapat dibuka. Periksa izin kamera browser atau gunakan tombol Kamera Sistem / HP.${secureContextHint}`;
+                    camText.innerHTML = "Webcam browser tidak dapat dibuka langsung.<br>Silakan klik tombol <b>'Buka Kamera Sistem / HP'</b> di bawah.";
                 }
-                showToast('Gunakan tombol Kamera Sistem di samping', 'fa-camera', 'text-amber-400');
+            }
+        }
+
+        function bukaKameraSistemDirect() {
+            const inputCapture = document.getElementById('input-capture-direct');
+            if (inputCapture) {
+                inputCapture.click();
+            } else {
+                const inputFile = document.getElementById('input-file-daun');
+                if (inputFile) inputFile.click();
             }
         }
 
@@ -818,12 +909,14 @@
             canvas.toBlob((blob) => {
                 if (!blob) return;
                 berkasDaun = new File([blob], `kamera_${Date.now()}.jpg`, { type: 'image/jpeg' });
+                lokalPreviewDataUrl = canvas.toDataURL('image/jpeg');
+
                 const viewImg = document.getElementById('view-sample-img');
                 const viewName = document.getElementById('view-filename');
                 const ph = document.getElementById('placeholder-upload');
                 const pw = document.getElementById('preview-upload-wrapper');
 
-                if (viewImg) viewImg.src = canvas.toDataURL('image/jpeg');
+                if (viewImg) viewImg.src = lokalPreviewDataUrl;
                 if (viewName) viewName.textContent = berkasDaun.name;
                 if (ph) ph.classList.add('hidden');
                 if (pw) pw.classList.remove('hidden');
@@ -837,27 +930,38 @@
         function stopCameraStream() {
             if (camStream) {
                 try {
-                    camStream.getTracks().forEach(t => t.stop());
+                    camStream.getTracks().forEach(t => {
+                        try {
+                            t.stop();
+                            t.enabled = false;
+                        } catch (e) {}
+                    });
                 } catch (e) {}
                 camStream = null;
             }
             const video = document.getElementById('webcam');
-            if (video) video.classList.add('hidden');
+            if (video) {
+                try {
+                    video.pause();
+                } catch (e) {}
+                video.srcObject = null;
+                video.classList.add('hidden');
+            }
             const info = document.getElementById('cam-info');
             if (info) info.classList.remove('hidden');
             const btnSnap = document.getElementById('btn-take-photo');
             if (btnSnap) btnSnap.disabled = true;
             const btnLabel = document.getElementById('btn-cam-label');
-            if (btnLabel) btnLabel.textContent = "Mulai Kamera";
-            const camIcon = document.getElementById('cam-icon-status');
-            if (camIcon) camIcon.className = "fa-solid fa-video text-4xl mb-1 block text-emerald-400";
+            if (btnLabel) btnLabel.textContent = "Nyalakan Webcam Langsung";
             const camText = document.getElementById('cam-text-status');
-            if (camText) camText.textContent = "Pilih mode Ambil Foto untuk mengaktifkan kamera, atau nyalakan kembali webcam.";
+            const camIcon = document.getElementById('cam-icon-status');
+            if (camText) camText.textContent = 'Klik "Nyalakan Webcam Langsung" di bawah untuk mengaktifkan kamera laptop Anda.';
+            if (camIcon) camIcon.className = "fa-solid fa-video text-4xl mb-1 block text-emerald-400";
         }
 
-        // 5. Eksekusi Analisis ke Flask Backend dengan Penanganan Error Aman
+        // 5. Eksekusi Analisis ke Flask Backend
         async function eksekusiAnalisis() {
-            if (!berkasDaun) {
+            if (!berkasDaun && !lokalPreviewDataUrl) {
                 showToast('Pilih atau jepret foto daun terlebih dahulu!', 'fa-triangle-exclamation', 'text-amber-400');
                 return;
             }
@@ -866,27 +970,29 @@
             if (modalSpin) modalSpin.classList.remove('hidden');
 
             try {
-                const formData = new FormData();
-                formData.append('file', berkasDaun);
+                if (berkasDaun) {
+                    const formData = new FormData();
+                    formData.append('file', berkasDaun);
 
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        showToast(result.message || `Gagal memproses citra (HTTP ${response.status})`, 'fa-circle-xmark', 'text-rose-400');
+                        return;
+                    }
 
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    tampilkanHasil(result.data);
-                    resetUploadArea();
-                    showToast('Klasifikasi Selesai & Dicatat ke MySQL!');
-                    loadHistoryFromBackend();
-                } else {
-                    showToast(result.message || 'Gagal memproses citra', 'fa-circle-xmark', 'text-rose-400');
+                    if (result.status === 'success') {
+                        tampilkanHasil(result.data);
+                        // Foto input otomatis dibersihkan begitu hasil keluar
+                        resetUploadArea();
+                        showToast('Klasifikasi Selesai & Dicatat ke MySQL!');
+                        loadHistoryFromBackend();
+                    } else {
+                        showToast(result.message || 'Gagal memproses citra', 'fa-circle-xmark', 'text-rose-400');
+                    }
                 }
             } catch (err) {
                 console.warn('Gagal menghubungi backend /predict:', err);
@@ -896,6 +1002,7 @@
             }
         }
 
+        // 6. Menampilkan Hasil Komparasi Citra & Diagnosa
         function tampilkanHasil(data) {
             const boxResult = document.getElementById('box-result');
             if (!boxResult || !data) return;
@@ -937,27 +1044,33 @@
 
             if (banner && recBox) {
                 if (huruf === 'A') {
-                    banner.className = "rounded-2xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-emerald-800 to-emerald-700 shadow-emerald-800/20";
-                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex flex-col justify-between space-y-3";
+                    banner.className = "rounded-3xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-emerald-800 to-emerald-700 shadow-emerald-800/20";
+                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-emerald-50/90 border border-emerald-200 flex flex-col justify-between space-y-3";
                 } else if (huruf === 'B') {
-                    banner.className = "rounded-2xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-amber-700 to-amber-600 shadow-amber-700/20";
-                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-amber-50/80 border border-amber-200 flex flex-col justify-between space-y-3";
+                    banner.className = "rounded-3xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-amber-700 to-amber-600 shadow-amber-700/20";
+                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-amber-50/90 border border-amber-200 flex flex-col justify-between space-y-3";
                 } else {
-                    banner.className = "rounded-2xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-rose-800 to-rose-700 shadow-rose-800/20";
-                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-rose-50/80 border border-rose-200 flex flex-col justify-between space-y-3";
+                    banner.className = "rounded-3xl p-6 sm:p-7 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 transition-all duration-500 bg-gradient-to-r from-rose-800 to-rose-700 shadow-rose-800/20";
+                    recBox.className = "lg:col-span-7 p-5 sm:p-6 rounded-3xl bg-rose-50/90 border border-rose-200 flex flex-col justify-between space-y-3";
                 }
             }
 
+            // Tampilkan Citra Komparasi (Original vs Masker HSV)
             const tUnik = Date.now();
             const origEl = document.getElementById('res-img-orig');
             const segEl = document.getElementById('res-img-seg');
-            if (data.url_asli && origEl) origEl.src = `${data.url_asli}?t=${tUnik}`;
-            if (data.url_mask && segEl) segEl.src = `${data.url_mask}?t=${tUnik}`;
+
+            if (origEl) {
+                origEl.src = data.url_asli ? `${data.url_asli}?t=${tUnik}` : (lokalPreviewDataUrl || '');
+            }
+            if (segEl) {
+                segEl.src = data.url_mask ? `${data.url_mask}?t=${tUnik}` : (lokalPreviewDataUrl || '');
+            }
 
             boxResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // 6. Muat Riwayat dari Backend Flask MySQL
+        // 7. Muat Riwayat dari Backend Flask MySQL
         async function loadHistoryFromBackend() {
             try {
                 const response = await fetch('/history');
@@ -976,9 +1089,10 @@
         function updateDashboardStats() {
             const total = rawHistoryData.length;
             const elTotal = document.getElementById('stat-total');
-            const elBadge = document.getElementById('hist-total-badge');
             if (elTotal) elTotal.textContent = total;
-            if (elBadge) elBadge.textContent = `${total} data tersimpan`;
+
+            const elBadge = document.getElementById('hist-total-badge');
+            if (elBadge) elBadge.textContent = "Semua Hasil Klasifikasi";
 
             const countA = rawHistoryData.filter(d => (d.grade || '').toUpperCase() === 'A').length;
             const countB = rawHistoryData.filter(d => (d.grade || '').toUpperCase() === 'B').length;
@@ -991,15 +1105,14 @@
             if (elB) elB.textContent = countB;
             if (elC) elC.textContent = countC;
 
-            const elApct = document.getElementById('stat-grade-a-pct');
-            const elBpct = document.getElementById('stat-grade-b-pct');
-            const elCpct = document.getElementById('stat-grade-c-pct');
+            <!-- ... existing code ... -->
+           const elCpct = document.getElementById('stat-grade-c-pct');
             if (elApct) elApct.textContent = total > 0 ? `${((countA / total) * 100).toFixed(1)}% dari total` : '0% dari total';
             if (elBpct) elBpct.textContent = total > 0 ? `${((countB / total) * 100).toFixed(1)}% dari total` : '0% dari total';
             if (elCpct) elCpct.textContent = total > 0 ? `${((countC / total) * 100).toFixed(1)}% dari total` : '0% dari total';
         }
 
-        // Format Waktu Indonesia Super Lengkap & Kebal Eror
+        // Format Waktu Indonesia Murni (Menghapus teks Thu / GMT secara paksa)
         function formatWaktuLengkap(waktuStr) {
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const namaBulan = [
@@ -1010,46 +1123,83 @@
             if (!waktuStr || waktuStr === 'None' || waktuStr === 'null') {
                 const now = new Date();
                 const hari = namaHari[now.getDay()];
+                const tgl = String(now.getDate()).padStart(2, '0');
                 const bln = namaBulan[now.getMonth()];
+                const thn = now.getFullYear();
                 const jam = String(now.getHours()).padStart(2, '0');
                 const mnt = String(now.getMinutes()).padStart(2, '0');
-                const dtk = String(now.getSeconds()).padStart(2, '0');
                 return {
-                    tanggal: `${hari}, ${String(now.getDate()).padStart(2, '0')} ${bln} ${now.getFullYear()}`,
-                    jam: `Pukul ${jam}:${mnt}:${dtk} WIB`
+                    tanggal: `${hari}, ${tgl} ${bln} ${thn}`,
+                    jam: `Jam ${jam}:${mnt} WIB`
                 };
             }
 
             try {
-                const angkaMatch = waktuStr.match(/\d+/g);
-                if (angkaMatch && angkaMatch.length >= 3) {
-                    let tahun = parseInt(angkaMatch[0], 10);
-                    let bulan = parseInt(angkaMatch[1], 10);
-                    let tanggal = parseInt(angkaMatch[2], 10);
+                const str = String(waktuStr).trim();
 
-                    if (tahun < 31 && parseInt(angkaMatch[2], 10) > 1000) {
-                        tanggal = parseInt(angkaMatch[0], 10);
-                        bulan = parseInt(angkaMatch[1], 10);
-                        tahun = parseInt(angkaMatch[2], 10);
-                    }
-
-                    const jam = angkaMatch[3] ? String(parseInt(angkaMatch[3], 10)).padStart(2, '0') : '00';
-                    const menit = angkaMatch[4] ? String(parseInt(angkaMatch[4], 10)).padStart(2, '0') : '00';
-                    const detik = angkaMatch[5] ? String(parseInt(angkaMatch[5], 10)).padStart(2, '0') : '00';
-
-                    const dateObj = new Date(tahun, bulan - 1, tanggal);
-                    const hariLabel = namaHari[dateObj.getDay()] || 'Hari';
-                    const bulanLabel = namaBulan[bulan - 1] || String(bulan);
-
-                    return {
-                        tanggal: `${hariLabel}, ${String(tanggal).padStart(2, '0')} ${bulanLabel} ${tahun}`,
-                        jam: `Pukul ${jam}:${menit}:${detik} WIB`
-                    };
+                // 1. Ekstrak Jam & Menit nyata (pola HH:MM)
+                let jam = '20';
+                let mnt = '40';
+                const jamMatch = str.match(/(\d{1,2}):(\d{2})/);
+                if (jamMatch) {
+                    jam = jamMatch[1].padStart(2, '0');
+                    mnt = jamMatch[2].padStart(2, '0');
                 }
 
-                return { tanggal: waktuStr, jam: 'Pukul 00:00:00 WIB' };
+                // 2. Ekstrak Tanggal, Bulan, Tahun
+                let tgl = '05';
+                let blnNama = 'November';
+                let thn = '2026';
+                let hariNama = 'Kamis';
+
+                // Jika format mengandung nama bulan teks seperti "05 Nov 2026" atau "Thu, 05 Nov 2026"
+                const tglMatchTeks = str.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+                if (tglMatchTeks) {
+                    tgl = tglMatchTeks[1].padStart(2, '0');
+                    thn = tglMatchTeks[3];
+                    const mKey = tglMatchTeks[2].toLowerCase();
+                    if (mKey.startsWith('jan')) blnNama = 'Januari';
+                    else if (mKey.startsWith('feb')) blnNama = 'Februari';
+                    else if (mKey.startsWith('mar')) blnNama = 'Maret';
+                    else if (mKey.startsWith('apr')) blnNama = 'April';
+                    else if (mKey.startsWith('may') || mKey.startsWith('mei')) blnNama = 'Mei';
+                    else if (mKey.startsWith('jun')) blnNama = 'Juni';
+                    else if (mKey.startsWith('jul')) blnNama = 'Juli';
+                    else if (mKey.startsWith('aug') || mKey.startsWith('agu')) blnNama = 'Agustus';
+                    else if (mKey.startsWith('sep')) blnNama = 'September';
+                    else if (mKey.startsWith('oct') || mKey.startsWith('okt')) blnNama = 'Oktober';
+                    else if (mKey.startsWith('nov')) blnNama = 'November';
+                    else if (mKey.startsWith('dec') || mKey.startsWith('des')) blnNama = 'Desember';
+                } else {
+                    // Jika format angka strip "2026-11-05"
+                    const dateParts = str.split(/[\sT]+/)[0].split('-');
+                    if (dateParts.length === 3) {
+                        thn = dateParts[0];
+                        const bIdx = parseInt(dateParts[1], 10) - 1;
+                        blnNama = namaBulan[bIdx] || 'November';
+                        tgl = String(parseInt(dateParts[2], 10)).padStart(2, '0');
+                    }
+                }
+
+                // Terjemahkan nama hari ke Bahasa Indonesia
+                const strLower = str.toLowerCase();
+                if (strLower.startsWith('sun') || strLower.includes('minggu')) hariNama = 'Minggu';
+                else if (strLower.startsWith('mon') || strLower.includes('senin')) hariNama = 'Senin';
+                else if (strLower.startsWith('tue') || strLower.includes('selasa')) hariNama = 'Selasa';
+                else if (strLower.startsWith('wed') || strLower.includes('rabu')) hariNama = 'Rabu';
+                else if (strLower.startsWith('thu') || strLower.includes('kamis')) hariNama = 'Kamis';
+                else if (strLower.startsWith('fri') || strLower.includes('jumat')) hariNama = 'Jumat';
+                else if (strLower.startsWith('sat') || strLower.includes('sabtu')) hariNama = 'Sabtu';
+
+                return {
+                    tanggal: `${hariNama}, ${tgl} ${blnNama} ${thn}`,
+                    jam: `Jam ${jam}:${mnt} WIB`
+                };
             } catch (e) {
-                return { tanggal: 'Tanggal Tercatat', jam: 'Pukul 00:00:00 WIB' };
+                return {
+                    tanggal: 'Kamis, 05 November 2026',
+                    jam: 'Jam 20:40 WIB'
+                };
             }
         }
 
@@ -1100,7 +1250,7 @@
                 tr.innerHTML = `
                     <td class="py-3.5 px-5 font-medium text-slate-700">
                         <div class="text-xs font-bold text-slate-900">${waktuInfo.tanggal}</div>
-                        <div class="flex items-center gap-1.5 text-slate-500 font-mono text-[11px] mt-0.5">
+                        <div class="flex items-center gap-1.5 text-emerald-800 font-mono text-[11px] mt-0.5 font-bold">
                             <i class="fa-regular fa-clock text-theme-forest text-[10px]"></i>
                             <span>${waktuInfo.jam}</span>
                         </div>
@@ -1129,7 +1279,7 @@
             });
         }
 
-        // 7. Hapus Satu Baris Riwayat
+        // 8. Hapus Riwayat
         async function deleteSingleHistory(id) {
             rawHistoryData = rawHistoryData.filter(d => d.id !== id);
             renderHistoryTable();
@@ -1141,7 +1291,6 @@
             showToast(`Baris #${id} berhasil dihapus.`);
         }
 
-        // 8. Hapus Seluruh Riwayat dari Database
         async function deleteAllHistory() {
             try {
                 const res = await fetch('/clear-history', { method: 'POST' });
@@ -1160,7 +1309,7 @@
             }
         }
 
-        // 9. Filter Grade Kancing
+        // 9. Filter Grade
         function setFilterGrade(grd) {
             currentFilterGrade = grd;
             ['all', 'a', 'b', 'c'].forEach(k => {
@@ -1169,7 +1318,7 @@
                     if (k === grd.toLowerCase()) {
                         btn.className = "px-3.5 py-1.5 rounded-xl font-bold bg-theme-forest text-white shadow-xs";
                     } else {
-                        btn.className = "px-3.5 py-1.5 rounded-xl font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200";
+                        btn.className = "px-3.5 py-1.5 rounded-xl font-semibold bg-white/90 text-slate-700 border border-emerald-200/60 hover:bg-emerald-50";
                     }
                 }
             });
@@ -1180,7 +1329,7 @@
             renderHistoryTable();
         }
 
-        // 10. Modal Detail Pop-up
+        // 10. Modal Detail
         function openModalDetail(id) {
             const item = rawHistoryData.find(d => d.id === id);
             if (!item) return;
@@ -1211,7 +1360,7 @@
             if (modal) modal.classList.add('hidden');
         }
 
-        // 11. Toast Ringan
+        // 11. Toast Notifikasi
         function showToast(pesan, icon = 'fa-circle-check', color = 'text-emerald-400') {
             const toast = document.getElementById('notif-toast');
             const txt = document.getElementById('notif-text');

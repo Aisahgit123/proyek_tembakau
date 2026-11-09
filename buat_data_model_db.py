@@ -1,13 +1,19 @@
 import os
 import pymysql
 
-from fitur_tembakau import CLASS_NAMES, ekstrak_fitur_citra, normalisasi_nama_kelas
+from fitur_tembakau import (
+    CLASS_NAMES,
+    REKOMENDASI_PER_KELAS,
+    ekstrak_fitur_citra,
+    normalisasi_nama_kelas,
+)
 from database import get_database_connection, print_mysql_startup_warning
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_DIR = os.path.join(BASE_DIR, "dataset", "train")
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png")
+URUTAN_TAMPILAN_KELAS = ["siap_rajang", "sortir_parsial", "afkir_total"]
 
 
 def siapkan_tabel(conn):
@@ -58,7 +64,7 @@ def ambil_sampel_train():
 
     sampel = []
     kelas_ditemukan = set()
-    for nama_folder in sorted(os.listdir(DATASET_DIR)):
+    for nama_folder in os.listdir(DATASET_DIR):
         folder = os.path.join(DATASET_DIR, nama_folder)
         if not os.path.isdir(folder):
             continue
@@ -68,11 +74,14 @@ def ambil_sampel_train():
             continue
         kelas_ditemukan.add(kelas)
 
-        for nama_file in sorted(os.listdir(folder)):
+        for nama_file in sorted(os.listdir(folder), key=str.casefold):
             if nama_file.lower().endswith(IMAGE_EXTENSIONS):
                 path = os.path.join(folder, nama_file)
                 source_path = os.path.relpath(path, BASE_DIR).replace(os.sep, "/")
                 sampel.append((path, source_path, nama_file, kelas))
+
+    urutan_kelas = {kelas: index for index, kelas in enumerate(URUTAN_TAMPILAN_KELAS)}
+    sampel.sort(key=lambda item: (urutan_kelas[item[3]], item[2].casefold()))
 
     kelas_hilang = sorted(set(CLASS_NAMES) - kelas_ditemukan)
     if kelas_hilang:
@@ -84,87 +93,76 @@ def ambil_sampel_train():
 
 def jalankan_konversi_murni_train():
     sampel = ambil_sampel_train()
-    jumlah_disimpan = 0
+    data_fitur = []
+    for path, source_path, nama_file, kelas in sampel:
+        fitur = ekstrak_fitur_citra(path)
+        if fitur is None:
+            raise ValueError(f"Gambar tidak dapat dibaca: {path}")
+        data_fitur.append(
+            (
+                nama_file,
+                kelas,
+                fitur["luas_daun"],
+                fitur["luas_cacat"],
+                fitur["rasio_cacat"],
+                fitur["mean_h"],
+                fitur["mean_s"],
+                fitur["mean_v"],
+                REKOMENDASI_PER_KELAS[kelas],
+                source_path,
+            )
+        )
 
     conn = get_database_connection()
     try:
         siapkan_tabel(conn)
+        conn.begin()
         with conn.cursor() as cursor:
-            for path, source_path, nama_file, kelas in sampel:
-                fitur = ekstrak_fitur_citra(path)
-                if fitur is None:
-                    raise ValueError(f"Gambar tidak dapat dibaca: {path}")
-
-                nilai = (
-                    nama_file,
-                    kelas,
-                    fitur["luas_daun"],
-                    fitur["luas_cacat"],
-                    fitur["rasio_cacat"],
-                    fitur["mean_h"],
-                    fitur["mean_s"],
-                    fitur["mean_v"],
-                    fitur["rekomendasi"],
-                    source_path,
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM fitur_data_train
+                WHERE source_path IS NULL OR source_path NOT LIKE %s
+                """,
+                ("dataset/train/%",),
+            )
+            if cursor.fetchone()[0]:
+                raise ValueError(
+                    "Tabel fitur_data_train berisi baris di luar dataset/train; "
+                    "penomoran ulang dibatalkan agar data lain tidak berubah."
                 )
-                cursor.execute(
-                    """
-                    SELECT id FROM fitur_data_train
-                    WHERE source_path IS NULL
-                      AND nama_file = %s
-                      AND REPLACE(LOWER(grade_aktual), 'persial', 'parsial') = %s
-                    LIMIT 1
-                    """,
-                    (nama_file, kelas),
-                )
-                existing = cursor.fetchone()
-
-                if existing:
-                    cursor.execute(
-                        """
-                        UPDATE fitur_data_train
-                        SET nama_file=%s, grade_aktual=%s, luas_daun_px=%s,
-                            luas_cacat_px=%s, rasio_cacat_persen=%s,
-                            rata_rata_hue=%s, rata_rata_sat=%s, rata_rata_val=%s,
-                            rekomendasi_mesin=%s, source_path=%s,
-                            waktu_ekstraksi=CURRENT_TIMESTAMP
-                        WHERE id=%s
-                        """,
-                        nilai + (existing[0],),
-                    )
-                else:
-                    cursor.execute(
-                        """
-                        INSERT INTO fitur_data_train (
-                            nama_file, grade_aktual, luas_daun_px, luas_cacat_px,
-                            rasio_cacat_persen, rata_rata_hue, rata_rata_sat,
-                            rata_rata_val, rekomendasi_mesin, source_path
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        ON DUPLICATE KEY UPDATE
-                            nama_file=VALUES(nama_file),
-                            grade_aktual=VALUES(grade_aktual),
-                            luas_daun_px=VALUES(luas_daun_px),
-                            luas_cacat_px=VALUES(luas_cacat_px),
-                            rasio_cacat_persen=VALUES(rasio_cacat_persen),
-                            rata_rata_hue=VALUES(rata_rata_hue),
-                            rata_rata_sat=VALUES(rata_rata_sat),
-                            rata_rata_val=VALUES(rata_rata_val),
-                            rekomendasi_mesin=VALUES(rekomendasi_mesin),
-                            waktu_ekstraksi=CURRENT_TIMESTAMP
-                        """,
-                        nilai,
-                    )
-                jumlah_disimpan += 1
+            cursor.execute("DELETE FROM fitur_data_train")
+            cursor.executemany(
+                """
+                INSERT INTO fitur_data_train (
+                    id, nama_file, grade_aktual, luas_daun_px, luas_cacat_px,
+                    rasio_cacat_persen, rata_rata_hue, rata_rata_sat,
+                    rata_rata_val, rekomendasi_mesin, source_path
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    (row_id, *nilai)
+                    for row_id, nilai in enumerate(data_fitur, start=1)
+                ),
+            )
+        conn.commit()
+        with conn.cursor() as cursor:
+            cursor.execute(
+                f"ALTER TABLE fitur_data_train AUTO_INCREMENT = {len(data_fitur) + 1}"
+            )
     except pymysql.MySQLError as error:
+        conn.rollback()
         print_mysql_startup_warning(error)
+        raise
+    except Exception:
+        conn.rollback()
         raise
     finally:
         conn.close()
 
     print("Database fitur: MySQL db_tembakau_ambat")
     print("Tabel: fitur_data_train")
-    print(f"Sampel latih tersimpan/diperbarui: {jumlah_disimpan}")
-    for kelas in CLASS_NAMES:
+    print(f"Sampel latih tersimpan/diperbarui: {len(data_fitur)}")
+    for kelas in URUTAN_TAMPILAN_KELAS:
         banyak = sum(1 for item in sampel if item[3] == kelas)
         print(f"  {kelas}: {banyak}")
     print("Sumber data: dataset/train saja; folder test tidak disentuh.")

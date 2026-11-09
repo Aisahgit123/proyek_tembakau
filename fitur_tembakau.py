@@ -5,6 +5,11 @@ import numpy as np
 
 
 CLASS_NAMES = ["afkir_total", "siap_rajang", "sortir_parsial"]
+REKOMENDASI_PER_KELAS = {
+    "siap_rajang": "Grade A: Siap Rajang Penuh (Langsung ke corong)",
+    "sortir_parsial": "Grade B: Sortir Parsial (Rompes ujung daun)",
+    "afkir_total": "Grade C: Afkir Total (Ditolak dari mesin)",
+}
 FEATURE_COLUMNS = [
     "luas_daun_px",
     "luas_cacat_px",

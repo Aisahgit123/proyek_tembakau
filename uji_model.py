@@ -7,6 +7,7 @@ import tensorflow as tf
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+from vision import prepare_leaf_sample
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH_KERAS = os.path.join(BASE_DIR, "model", "mobilenet_tembakau.keras")
@@ -99,12 +100,18 @@ def evaluasi_data_test():
             path_foto = os.path.join(folder_kelas, file_foto)
             bgr = cv2.imread(path_foto)
             if bgr is None:
-                continue
+                raise ValueError(f"Gambar data test tidak dapat dibaca: {path_foto}")
 
             total_diuji += 1
-            img_224 = cv2.resize(bgr, (224, 224), interpolation=cv2.INTER_AREA)
-            img_rgb = cv2.cvtColor(img_224, cv2.COLOR_BGR2RGB)
-            input_tensor = tf.convert_to_tensor(np.expand_dims(img_rgb.astype(np.float32), axis=0))
+            try:
+                _, _, _, model_image = prepare_leaf_sample(bgr)
+            except ValueError as error:
+                raise ValueError(
+                    f"Segmentasi gambar data test gagal: {path_foto}: {error}"
+                ) from error
+            input_tensor = tf.convert_to_tensor(
+                np.expand_dims(model_image, axis=0)
+            )
 
             pred_tensor = model(input_tensor, training=False)
             probabilitas = pred_tensor.numpy()[0]

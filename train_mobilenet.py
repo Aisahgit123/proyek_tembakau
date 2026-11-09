@@ -5,7 +5,7 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
-from vision import MODEL_IMAGE_SIZE, prepare_leaf_for_model, segment_leaf
+from vision import MODEL_IMAGE_SIZE, prepare_leaf_sample
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE_DIR, "model")
@@ -64,16 +64,12 @@ def muat_dataset_dari_folder(target_dir):
                 jumlah_gagal_segmentasi += 1
                 continue
 
-            img_224 = cv2.resize(
-                bgr,
-                (MODEL_IMAGE_SIZE, MODEL_IMAGE_SIZE),
-                interpolation=cv2.INTER_AREA,
-            )
-            mask_daun, _ = segment_leaf(img_224)
-            if cv2.countNonZero(mask_daun) < 500:
+            try:
+                _, _, _, model_image = prepare_leaf_sample(bgr)
+            except ValueError:
                 jumlah_gagal_segmentasi += 1
                 continue
-            x_data.append(prepare_leaf_for_model(img_224, mask_daun))
+            x_data.append(model_image)
             y_data.append(label_idx)
             rincian[label_name] += 1
 
@@ -127,6 +123,7 @@ def bangun_model_mobilenet():
     return model
 
 def jalankan_pelatihan():
+    tf.keras.utils.set_random_seed(42)
     x_train, y_train, rincian = muat_dataset_train()
     total_data = len(x_train)
 
@@ -176,7 +173,6 @@ def jalankan_pelatihan():
         verbose=1
     )
 
-    tf.keras.utils.set_random_seed(42)
     base_model = next(
         layer
         for layer in model.layers

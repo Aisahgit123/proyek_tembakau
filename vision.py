@@ -17,6 +17,20 @@ def _fill_holes(mask):
     return cv2.bitwise_or(mask, cv2.bitwise_not(flood_crop))
 
 
+def hitung_persentase_cokelat(image_bgr, leaf_mask):
+    hsv = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2HSV)
+    brown_mask = cv2.inRange(
+        hsv,
+        np.array([0, 38, 35]),
+        np.array([25, 255, 220]),
+    )
+    brown_mask = cv2.bitwise_and(brown_mask, brown_mask, mask=leaf_mask)
+    leaf_pixels = cv2.countNonZero(leaf_mask)
+    if not leaf_pixels:
+        raise ValueError("Area daun kosong; persentase warna cokelat tidak dapat dihitung.")
+    return round(cv2.countNonZero(brown_mask) / leaf_pixels * 100.0, 1)
+
+
 def segment_leaf(image_bgr):
     height, width = image_bgr.shape[:2]
     blurred = cv2.GaussianBlur(image_bgr, (5, 5), 0)
@@ -35,56 +49,74 @@ def segment_leaf(image_bgr):
     core_contours, _ = cv2.findContours(
         leaf_core, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
-    raw_mask = color_mask.copy()
+    if not core_contours:
+        raise ValueError(
+            "Daun tidak terdeteksi dengan jelas. Gunakan satu daun utuh "
+            "di atas latar polos yang kontras."
+        )
 
-    if core_contours:
-        main_core = max(core_contours, key=cv2.contourArea)
-        if cv2.contourArea(main_core) > 400:
-            x, y, box_width, box_height = cv2.boundingRect(main_core)
-            grabcut_mask = np.full((height, width), cv2.GC_PR_BGD, dtype=np.uint8)
-            grabcut_mask[:4, :] = cv2.GC_BGD
-            grabcut_mask[-4:, :] = cv2.GC_BGD
-            grabcut_mask[:, :4] = cv2.GC_BGD
-            grabcut_mask[:, -4:] = cv2.GC_BGD
+    main_core = max(core_contours, key=cv2.contourArea)
+    if cv2.contourArea(main_core) <= 400:
+        raise ValueError(
+            "Area daun terlalu kecil atau kontrasnya kurang. Ambil foto lebih dekat "
+            "dengan satu daun utuh di atas latar polos."
+        )
 
-            padding = 12
-            x1 = max(4, x - padding)
-            y1 = max(4, y - padding)
-            x2 = min(width - 4, x + box_width + padding)
-            y2 = min(height - 4, y + box_height + padding)
-            if x1 < x2 and y1 < y2:
-                grabcut_mask[y1:y2, x1:x2] = cv2.GC_PR_FGD
+    x, y, box_width, box_height = cv2.boundingRect(main_core)
+    padding = max(12, round(max(height, width) * 0.015))
+    x1 = max(0, x - padding)
+    y1 = max(0, y - padding)
+    x2 = min(width, x + box_width + padding)
+    y2 = min(height, y + box_height + padding)
 
-            erode_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
-            core_eroded = cv2.morphologyEx(leaf_core, cv2.MORPH_ERODE, erode_kernel)
-            grabcut_mask[core_eroded > 0] = cv2.GC_FGD
-            background_model = np.zeros((1, 65), np.float64)
-            foreground_model = np.zeros((1, 65), np.float64)
-            try:
-                cv2.grabCut(
-                    image_bgr,
-                    grabcut_mask,
-                    None,
-                    background_model,
-                    foreground_model,
-                    iterCount=3,
-                    mode=cv2.GC_INIT_WITH_MASK,
-                )
-                raw_mask = np.where(
-                    (grabcut_mask == cv2.GC_FGD)
-                    | (grabcut_mask == cv2.GC_PR_FGD),
-                    255,
-                    0,
-                ).astype(np.uint8)
-            except cv2.error:
-                raw_mask = color_mask
+    grabcut_mask = np.full((height, width), cv2.GC_BGD, dtype=np.uint8)
+    grabcut_mask[y1:y2, x1:x2] = cv2.GC_PR_FGD
+    erode_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+    core_eroded = cv2.morphologyEx(leaf_core, cv2.MORPH_ERODE, erode_kernel)
+    grabcut_mask[core_eroded > 0] = cv2.GC_FGD
+
+    border = max(4, round(min(height, width) * 0.01))
+    grabcut_mask[:border, :] = cv2.GC_BGD
+    grabcut_mask[-border:, :] = cv2.GC_BGD
+    grabcut_mask[:, :border] = cv2.GC_BGD
+    grabcut_mask[:, -border:] = cv2.GC_BGD
+
+    background_model = np.zeros((1, 65), np.float64)
+    foreground_model = np.zeros((1, 65), np.float64)
+    try:
+        cv2.grabCut(
+            image_bgr,
+            grabcut_mask,
+            None,
+            background_model,
+            foreground_model,
+            iterCount=3,
+            mode=cv2.GC_INIT_WITH_MASK,
+        )
+    except cv2.error as error:
+        raise ValueError(
+            "Latar dan daun tidak dapat dipisahkan dengan yakin. "
+            "Coba foto ulang dengan satu daun dan latar polos yang kontras."
+        ) from error
+
+    raw_mask = np.where(
+        (grabcut_mask == cv2.GC_FGD) | (grabcut_mask == cv2.GC_PR_FGD),
+        255,
+        0,
+    ).astype(np.uint8)
 
     contours, _ = cv2.findContours(raw_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        raise ValueError("Mask daun kosong; coba foto ulang dengan pencahayaan lebih baik.")
+
+    contours = sorted(list(contours), key=cv2.contourArea, reverse=True)
+    main_contour = contours[0]
+    main_area = cv2.contourArea(main_contour)
+    if main_area <= MIN_LEAF_AREA:
+        raise ValueError("Area daun terlalu kecil untuk dipisahkan.")
+
     leaf_mask = np.zeros((height, width), dtype=np.uint8)
-    if contours:
-        main_contour = max(contours, key=cv2.contourArea)
-        if cv2.contourArea(main_contour) > MIN_LEAF_AREA:
-            cv2.drawContours(leaf_mask, [main_contour], -1, 255, thickness=cv2.FILLED)
+    cv2.drawContours(leaf_mask, [main_contour], -1, 255, thickness=cv2.FILLED)
 
     leaf_mask = _fill_holes(leaf_mask)
     smooth_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
@@ -92,17 +124,7 @@ def segment_leaf(image_bgr):
     leaf_mask = cv2.morphologyEx(leaf_mask, cv2.MORPH_OPEN, smooth_kernel)
 
     if cv2.countNonZero(leaf_mask) < MIN_LEAF_AREA:
-        fallback_contours, _ = cv2.findContours(
-            color_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-        leaf_mask.fill(0)
-        if fallback_contours:
-            fallback_contour = max(fallback_contours, key=cv2.contourArea)
-            if cv2.contourArea(fallback_contour) > MIN_LEAF_AREA:
-                cv2.drawContours(
-                    leaf_mask, [fallback_contour], -1, 255, thickness=cv2.FILLED
-                )
-                leaf_mask = _fill_holes(leaf_mask)
+        raise ValueError("Mask daun terlalu kecil setelah pembersihan morfologi.")
 
     dark_mask = cv2.inRange(hsv, np.array([0, 0, 10]), np.array([180, 255, 65]))
     rot_mask = cv2.inRange(hsv, np.array([0, 25, 20]), np.array([22, 255, 140]))
@@ -184,8 +206,7 @@ def make_transparent_leaf_preview(image_bgr, leaf_mask):
 
     component_mask = np.zeros(leaf_mask.shape, dtype=np.uint8)
     cv2.drawContours(component_mask, [main_contour], -1, 255, thickness=cv2.FILLED)
-    alpha = cv2.GaussianBlur(component_mask, (3, 3), 0.6)
     preview = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2BGRA)
-    preview[:, :, 3] = alpha
-    preview[alpha == 0, :3] = 0
+    preview[:, :, 3] = component_mask
+    preview[component_mask == 0, :3] = 0
     return preview
