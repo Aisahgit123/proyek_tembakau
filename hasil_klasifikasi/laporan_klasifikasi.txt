@@ -1,0 +1,39 @@
+======================================================================
+LAPORAN RESMI HASIL KLASIFIKASI DATA TEST (BAB 4 SKRIPSI)
+Waktu Pengujian : 20-10-2026 17:22:55
+Model Evaluasi  : MobileNetV2 Transfer Learning
+======================================================================
+
+Total Sampel Uji     : 30 Citra
+Tebakan Benar        : 20 Citra
+Tebakan Salah        : 10 Citra
+Akurasi Rata-Rata    : 66.67%
+
+TABEL CONFUSION MATRIX (3x3):
+[[9, 1, 0],
+ [0, 9, 1],
+ [8, 0, 2]]
+
+CLASSIFICATION REPORT:
+                          precision    recall  f1-score   support
+
+   Afkir Total (Grade C)     0.5294    0.9000    0.6667        10
+   Siap Rajang (Grade A)     0.9000    0.9000    0.9000        10
+Sortir Parsial (Grade B)     0.6667    0.2000    0.3077        10
+
+                accuracy                         0.6667        30
+               macro avg     0.6987    0.6667    0.6248        30
+            weighted avg     0.6987    0.6667    0.6248        30
+
+
+DAFTAR CITRA YANG SALAH KLASIFIKASI:
+1. Berkas: WhatsApp Image 2026-10-04 at 13.08.11 - Copy.jpeg | Asli: Afkir Total (Grade C) -> Prediksi: Siap Rajang (Grade A) (62.4%)
+2. Berkas: WhatsApp Image 2026-10-04 at 13.06.34 (1).jpeg | Asli: Siap Rajang (Grade A) -> Prediksi: Sortir Parsial (Grade B) (77.13%)
+3. Berkas: WhatsApp Image 2026-10-04 at 13.05.17 (1).jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (58.7%)
+4. Berkas: WhatsApp Image 2026-10-04 at 13.05.19 (1).jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (100.0%)
+5. Berkas: WhatsApp Image 2026-10-04 at 13.05.19 (2).jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (88.57%)
+6. Berkas: WhatsApp Image 2026-10-04 at 13.05.19.jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (77.28%)
+7. Berkas: WhatsApp Image 2026-10-04 at 13.05.21.jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (99.48%)
+8. Berkas: WhatsApp Image 2026-10-04 at 13.05.22.jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (99.93%)
+9. Berkas: WhatsApp Image 2026-10-04 at 13.05.23 (1).jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (77.46%)
+10. Berkas: WhatsApp Image 2026-10-04 at 13.05.23.jpeg | Asli: Sortir Parsial (Grade B) -> Prediksi: Afkir Total (Grade C) (98.09%)

@@ -1,0 +1,31 @@
+file,kelas_asli,prediksi_model,confidence,prob_afkir,prob_siap,prob_sortir,status
+WhatsApp Image 2026-10-04 at 13.08.06.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),100.0,100.0,0.0,0.0,BENAR
+WhatsApp Image 2026-10-04 at 13.08.07.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),97.04,97.04,0.0,2.96,BENAR
+WhatsApp Image 2026-10-04 at 13.08.09.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),63.49,63.49,0.02,36.49,BENAR
+WhatsApp Image 2026-10-04 at 13.08.10.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),99.15,99.15,0.0,0.85,BENAR
+WhatsApp Image 2026-10-04 at 13.08.11 - Copy.jpeg,Afkir Total (Grade C),Siap Rajang (Grade A),62.4,3.93,62.4,33.67,SALAH
+WhatsApp Image 2026-10-04 at 13.08.12.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),97.45,97.45,0.01,2.54,BENAR
+WhatsApp Image 2026-10-04 at 13.08.30.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),99.74,99.74,0.0,0.26,BENAR
+WhatsApp Image 2026-10-04 at 13.08.34.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),97.33,97.33,0.02,2.65,BENAR
+WhatsApp Image 2026-10-04 at 13.09.33 (1).jpeg,Afkir Total (Grade C),Afkir Total (Grade C),99.96,99.96,0.0,0.04,BENAR
+WhatsApp Image 2026-10-04 at 13.09.33.jpeg,Afkir Total (Grade C),Afkir Total (Grade C),99.99,99.99,0.0,0.01,BENAR
+WhatsApp Image 2026-10-04 at 13.06.27.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),93.3,0.03,93.3,6.67,BENAR
+WhatsApp Image 2026-10-04 at 13.06.28.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),96.65,0.05,96.65,3.3,BENAR
+WhatsApp Image 2026-10-04 at 13.06.30.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),99.76,0.04,99.76,0.2,BENAR
+WhatsApp Image 2026-10-04 at 13.06.31.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),99.09,0.0,99.09,0.91,BENAR
+WhatsApp Image 2026-10-04 at 13.06.34 (1).jpeg,Siap Rajang (Grade A),Sortir Parsial (Grade B),77.13,0.01,22.86,77.13,SALAH
+WhatsApp Image 2026-10-04 at 13.06.34.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),99.33,0.0,99.33,0.67,BENAR
+WhatsApp Image 2026-10-04 at 13.06.35 (1).jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),99.0,0.05,99.0,0.95,BENAR
+WhatsApp Image 2026-10-04 at 13.06.35.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),94.79,0.0,94.79,5.2,BENAR
+WhatsApp Image 2026-10-04 at 13.06.36.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),97.09,0.15,97.09,2.75,BENAR
+WhatsApp Image 2026-10-04 at 13.07.31.jpeg,Siap Rajang (Grade A),Siap Rajang (Grade A),99.81,0.0,99.81,0.19,BENAR
+WhatsApp Image 2026-10-04 at 13.05.17 (1).jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),58.7,58.7,0.42,40.88,SALAH
+WhatsApp Image 2026-10-04 at 13.05.17.jpeg,Sortir Parsial (Grade B),Sortir Parsial (Grade B),92.09,5.68,2.23,92.09,BENAR
+WhatsApp Image 2026-10-04 at 13.05.19 (1).jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),100.0,100.0,0.0,0.0,SALAH
+WhatsApp Image 2026-10-04 at 13.05.19 (2).jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),88.57,88.57,0.02,11.41,SALAH
+WhatsApp Image 2026-10-04 at 13.05.19.jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),77.28,77.28,0.1,22.62,SALAH
+WhatsApp Image 2026-10-04 at 13.05.21.jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),99.48,99.48,0.0,0.52,SALAH
+WhatsApp Image 2026-10-04 at 13.05.22 (1).jpeg,Sortir Parsial (Grade B),Sortir Parsial (Grade B),92.09,5.68,2.23,92.09,BENAR
+WhatsApp Image 2026-10-04 at 13.05.22.jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),99.93,99.93,0.0,0.07,SALAH
+WhatsApp Image 2026-10-04 at 13.05.23 (1).jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),77.46,77.46,0.01,22.53,SALAH
+WhatsApp Image 2026-10-04 at 13.05.23.jpeg,Sortir Parsial (Grade B),Afkir Total (Grade C),98.09,98.09,0.0,1.9,SALAH
